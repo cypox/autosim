@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import os
 
-def generate_multiplier(a_len = 4, b_len = 4, w = 0b1010, filename = 'sq_mult.vhd'):
+def generate_multiplier(a_len = 4, b_len = 4, w = 0b1010, filename = 'sq_mult.vhd', top = 'sq_mult'):
   o_len = a_len + b_len
 
   W = format(w, '#0{}b'.format(a_len+2))[2:]
@@ -17,23 +17,23 @@ def generate_multiplier(a_len = 4, b_len = 4, w = 0b1010, filename = 'sq_mult.vh
   f.write('library IEEE;\n')
   f.write('use IEEE.STD_LOGIC_1164.ALL;\n')
   f.write('\n')
-  f.write('entity sq_mult is \n')
+  f.write('entity {} is \n'.format(top))
   f.write('  Port (\n')
   f.write('    B : in STD_LOGIC_VECTOR ({} downto 0);\n'.format(b_len-1))
   f.write('    O : out STD_LOGIC_VECTOR ({} downto 0));\n'.format(o_len-1))
-  f.write('end sq_mult;\n')
+  f.write('end {};\n'.format(top))
 
   f.write('\n')
 
   #architecture
   f.write('-- ARCHITECTURE\n');
-  f.write('architecture Behavioral of sq_mult is\n')
+  f.write('architecture Behavioral of {} is\n'.format(top))
 
   f.write('\n')
 
   #components
   f.write('-- COMPONENTS\n');
-  f.write('component FA\n')
+  f.write('component fa\n')
   f.write('  Port (\n')
   f.write('    A : in STD_LOGIC;\n')
   f.write('    B : in STD_LOGIC;\n')
@@ -91,11 +91,11 @@ def generate_multiplier(a_len = 4, b_len = 4, w = 0b1010, filename = 'sq_mult.vh
     elif W[stage] == '1':
       for p in range(b_len):
         if p == 0:
-          f.write('B_{}_{}: FA port map(A => B({}), B => Si_{}_{}, Cin => \'0\', S => O({}), Co => Cr_{}_{});\n'.format(stage, p, p, stage, p, stage, stage, p))
+          f.write('B_{}_{}: fa port map(A => B({}), B => Si_{}_{}, Cin => \'0\', S => O({}), Co => Cr_{}_{});\n'.format(stage, p, p, stage, p, stage, stage, p))
         elif p < b_len-1:
-          f.write('B_{}_{}: FA port map(A => B({}), B => Si_{}_{}, Cin => Cr_{}_{}, S => So_{}_{}, Co => Cr_{}_{});\n'.format(stage, p, p, stage, p, stage, p-1, stage, p-1, stage, p))
+          f.write('B_{}_{}: fa port map(A => B({}), B => Si_{}_{}, Cin => Cr_{}_{}, S => So_{}_{}, Co => Cr_{}_{});\n'.format(stage, p, p, stage, p, stage, p-1, stage, p-1, stage, p))
         else:
-          f.write('B_{}_{}: FA port map(A => B({}), B => Si_{}_{}, Cin => Cr_{}_{}, S => So_{}_{}, Co => So_{}_{});\n'.format(stage, p, p, stage, p, stage, p-1, stage, p-1, stage, p))
+          f.write('B_{}_{}: fa port map(A => B({}), B => Si_{}_{}, Cin => Cr_{}_{}, S => So_{}_{}, Co => So_{}_{});\n'.format(stage, p, p, stage, p, stage, p-1, stage, p-1, stage, p))
 
   for p in range(b_len, o_len):
     f.write('O({}) <= So_{}_{};\n'.format(p, b_len-1, p-b_len))

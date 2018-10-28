@@ -10,7 +10,7 @@ entity FA is
            Co : out STD_LOGIC);
 end FA;
 
-architecture Behavioral of FA is
+architecture Behavioral of fa is
 
 begin
 

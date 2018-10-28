@@ -1,14 +1,13 @@
 #!/usr/bin/python3
 import os
 
-def generate_tcl_script(path = '/home/cy/dac-2019/autosim', filename = 'script.tcl'):
+def generate_tcl_script(path = '/home/cy/dac-2019/autosim', filename = 'script.tcl', top = 'sq_mult'):
   f = open(os.path.join(path, filename), 'w')
 
   part = 'xc7z020clg484-1'
   board = 'em.avnet.com:zed:part0:1.3'
   parent = os.path.join(path, 'project')
   project = os.path.join(parent, 'project.xpr')
-  top = 'sq_mult'
   source_dir = path
 
   f.write('set part {}\n'.format(part))

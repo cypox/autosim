@@ -11,8 +11,9 @@ if __name__ == "__main__":
   else:
     word_size = 4
 
-  fa_source_vhdl = 'vhdl/FA.vhd'
+  fa_source_vhdl = 'vhdl/fa.vhd'
   vivado_path = '/opt/Xilinx/Vivado/2017.4/bin/vivado'
+  top = 'sq_mult'
 
   outputs_dir = os.path.join(os.getcwd(), 'outputs')
   if not os.path.exists(outputs_dir):
@@ -28,13 +29,13 @@ if __name__ == "__main__":
     source_file = os.path.join(source_path, 'multiplier.vhd')
     print('generating source file {} for input {}'.format(source_file, format(i, '#0{}b'.format(word_size+2))))
     
-    generate_multiplier(a_len = word_size, b_len = word_size, w = i, filename = source_file)
+    generate_multiplier(a_len = word_size, b_len = word_size, w = i, filename = source_file, top = top)
     shutil.copy2(fa_source_vhdl, source_path)
 
     script_path = source_path
     script_name = 'script.tcl'
     script_file = os.path.join(script_path, script_name)
-    generate_tcl_script(path=script_path, filename = script_name)
+    generate_tcl_script(path=script_path, filename = script_name, top = top)
     print('generating tcl script in {}'.format(script_path))
 
     # vivado -mode batch -source script.tcl
