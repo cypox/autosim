@@ -4,6 +4,7 @@ import shutil
 from subprocess import call
 from vhdl.mgen import generate_multiplier
 from tcl.sgen import generate_tcl_script
+from extract.parse import parse_report
 
 if __name__ == "__main__":
   if len(sys.argv) == 2:
@@ -43,4 +44,9 @@ if __name__ == "__main__":
     print('executing: \'{}\''.format(command))
     os.system(command)
 
-    utilization_file = os.path.join(script_file, )
+    reports_dir = os.path.join(script_path, 'project')
+    utilization = os.path.join(reports_dir, 'utilization_placed.rpt')
+    power = os.path.join(reports_dir, 'power_routed.rpt')
+    parse_report(utilization)
+    parse_report(power)
+
