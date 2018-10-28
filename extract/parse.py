@@ -1,12 +1,15 @@
 #!/usr/bin/python3
-import sys
+import os, sys
 
 def key_to_text(key):
   return key.split('|')[1].rstrip().lstrip()
 
-def parse_report(filename = 'utilization_synth.rpt'):
+def parse_report(path = '.'):
+ 
+  util_file = os.path.join(path, 'utilization_placed.rpt')
+  power_file = os.path.join(path, 'power_routed.rpt')
 
-  keywords_map = {
+  u_keywords_map = {
     #utilization report keys
     '| Slice LUTs*             |'    : 0,
     '| Slice Registers         |'    : 0,
@@ -26,8 +29,10 @@ def parse_report(filename = 'utilization_synth.rpt'):
     '| LUT5     |'                   : 0,
     '| LUT3     |'                   : 0,
     '| LUT4     |'                   : 0,
-    '| LUT2     |'                   : 0,
+    '| LUT2     |'                   : 0
+  }
 
+  p_keywords_map = {
     #power report keys
     '| Total On-Chip Power (W)  |'   : 0,
     '| Dynamic (W)              |'   : 0,
@@ -38,15 +43,18 @@ def parse_report(filename = 'utilization_synth.rpt'):
     '| Static Power   |'             : 0
   }
   
-  report = open(filename, 'r')
-
+  report = open(util_file, 'r')
   for line in report:
-    for key in keywords_map.keys():
+    for key in u_keywords_map:
       if key in line:
-        keywords_map[key] = float(line.split('|')[2].replace("(Junction temp exceeded!)", ""))
+        u_keywords_map[key] = float(line.split('|')[2])
+  report.close()
   
-  for key in keywords_map:
-    print('{}: {}'.format(key_to_text(key), keywords_map[key]))
-
+  report = open(power_file, 'r')
+  for line in report:
+    for key in p_keywords_map:
+      if key in line:
+        p_keywords_map[key] = float(line.split('|')[2].replace("(Junction temp exceeded!)", ""))
   report.close()
 
+  return (u_keywords_map, p_keywords_map)

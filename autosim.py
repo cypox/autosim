@@ -45,8 +45,5 @@ if __name__ == "__main__":
     os.system(command)
 
     reports_dir = os.path.join(script_path, 'project')
-    utilization = os.path.join(reports_dir, 'utilization_placed.rpt')
-    power = os.path.join(reports_dir, 'power_routed.rpt')
-    parse_report(utilization)
-    parse_report(power)
-
+    (u, p) = parse_report(reports_dir)
+    print('LUT: {}, Power {}W'.format(u['| Slice                    |'], p['| Total On-Chip Power (W)  |']))
