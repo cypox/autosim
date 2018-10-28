@@ -40,7 +40,7 @@ if __name__ == "__main__":
     print('generating tcl script in {}'.format(script_path))
 
     # vivado -mode batch -source script.tcl
-    command = vivado_path + ' -mode batch -source ' + '"{}"'.format(script_file)
+    command = vivado_path + ' -nolog -nojournal -notrace -mode batch -source ' + '"{}"'.format(script_file)
     print('executing: \'{}\''.format(command))
     os.system(command)
 
