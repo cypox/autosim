@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import sys, os
 import shutil
+from subprocess import DEVNULL, STDOUT, check_call
+
 from subprocess import call
 from vhdl.mgen import generate_multiplier
 from tcl.sgen import generate_tcl_script
@@ -13,15 +15,15 @@ if __name__ == "__main__":
     word_size = 4
 
   fa_source_vhdl = 'vhdl/fa.vhd'
-  vivado_path = '/opt/Xilinx/Vivado/2017.4/bin/vivado'
+  vivado_cmd = ['/opt/Xilinx/Vivado/2017.4/bin/vivado']
   top = 'sq_mult'
 
   outputs_dir = os.path.join(os.getcwd(), 'outputs')
   if not os.path.exists(outputs_dir):
     os.makedirs(outputs_dir)
 
-  for i in range(13, 14): # for debug only
-  #for i in range(0, 2**word_size):
+  #for i in range(13, 14): # for debug only
+  for i in range(0, 2**word_size):
     output_path = '{}'.format(format(i, '#0{}b'.format(word_size+2)))
 
     source_path = os.path.join(outputs_dir, output_path)
@@ -40,9 +42,13 @@ if __name__ == "__main__":
     print('generating tcl script in {}'.format(script_path))
 
     # vivado -mode batch -source script.tcl
-    command = vivado_path + ' -nolog -nojournal -notrace -mode batch -source ' + '"{}"'.format(script_file)
+    #command = vivado_cmd + ' -nolog -nojournal -notrace -mode batch -source ' + '"{}"'.format(script_file)
+    #print('executing: \'{}\''.format(command))
+    # os.system(command) # deprecated
+    vivado_args = ['-nolog', '-nojournal', '-notrace', '-mode', 'batch', '-source', script_file]
+    command = vivado_cmd + vivado_args
     print('executing: \'{}\''.format(command))
-    os.system(command)
+    check_call(command, stdout=DEVNULL, stderr=STDOUT)
 
     reports_dir = os.path.join(script_path, 'project')
     (u, p) = parse_report(reports_dir)
