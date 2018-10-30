@@ -30,7 +30,7 @@ if __name__ == "__main__":
     if not os.path.exists(source_path):
         os.makedirs(source_path)
     source_file = os.path.join(source_path, 'multiplier.vhd')
-    print('generating source file {} for input {}'.format(source_file, format(i, '#0{}b'.format(word_size+2))))
+    #print('generating source file {} for input {}'.format(source_file, format(i, '#0{}b'.format(word_size+2))))
     
     generate_multiplier(a_len = word_size, b_len = word_size, w = i, filename = source_file, top = top)
     shutil.copy2(fa_source_vhdl, source_path)
@@ -39,17 +39,14 @@ if __name__ == "__main__":
     script_name = 'script.tcl'
     script_file = os.path.join(script_path, script_name)
     generate_tcl_script(path=script_path, filename = script_name, top = top)
-    print('generating tcl script in {}'.format(script_path))
+    #print('generating tcl script in {}'.format(script_path))
 
     # vivado -mode batch -source script.tcl
-    #command = vivado_cmd + ' -nolog -nojournal -notrace -mode batch -source ' + '"{}"'.format(script_file)
-    #print('executing: \'{}\''.format(command))
-    # os.system(command) # deprecated
     vivado_args = ['-nolog', '-nojournal', '-notrace', '-mode', 'batch', '-source', script_file]
     command = vivado_cmd + vivado_args
-    print('executing: \'{}\''.format(command))
+    #print('executing: \'{}\''.format(command))
     check_call(command, stdout=DEVNULL, stderr=STDOUT)
 
     reports_dir = os.path.join(script_path, 'project')
     (u, p) = parse_report(reports_dir)
-    print('LUT: {}, Power {}W'.format(u['| Slice                    |'], p['| Total On-Chip Power (W)  |']))
+    print('LUT: {}, Logic {}W, Signals {}.'.format(u['| Slice                    |'], p['| Slice Logic    |'], p['| Signals        |']))
