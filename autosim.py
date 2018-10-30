@@ -49,4 +49,4 @@ if __name__ == "__main__":
 
     reports_dir = os.path.join(script_path, 'project')
     (u, p) = parse_report(reports_dir)
-    print('LUT: {}, Logic {}W, Signals {}.'.format(u['| Slice                    |'], p['| Slice Logic    |'], p['| Signals        |']))
+    print('{}:{},{},{}'.format(format(i, '#0{}'.format(3)), u['| Slice                    |'], p['| Slice Logic    |'], p['| Signals        |']))
