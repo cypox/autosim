@@ -7,6 +7,7 @@ from subprocess import call
 from vhdl.mgen import generate_multiplier
 from tcl.sgen import generate_tcl_script
 from extract.parse import parse_report
+from grapher.graph import plot_results
 
 if __name__ == "__main__":
   if len(sys.argv) == 2:
@@ -23,11 +24,11 @@ if __name__ == "__main__":
     os.makedirs(outputs_dir)
 
   #for i in range(13, 14): # for debug only
-  for i in range(202, 2**word_size):
-  #for i in range(0, 2**word_size):
+  #for i in range(202, 2**word_size):
+  for i in range(0, 2**word_size):
     output_path = '{}'.format(format(i, '#0{}b'.format(word_size+2)))
 
-    source_path = os.path.join(outputs_dir, output_path)
+    source_path  p['| Signals        |']
     if not os.path.exists(source_path):
         os.makedirs(source_path)
     source_file = os.path.join(source_path, 'multiplier.vhd')
@@ -50,4 +51,6 @@ if __name__ == "__main__":
 
     reports_dir = os.path.join(script_path, 'project')
     (u, p) = parse_report(reports_dir)
-    print('{}:{},{},{}'.format(format(i, '#0{}'.format(3)), u['| Slice                    |'], p['| Slice Logic    |'], p['| Signals        |']))
+    #print('{}:{},{},{}'.format(format(i, '#0{}'.format(3)), u['| Slice                    |'], p['| Slice Logic    |'], p['| Signals        |']))
+
+    plot_results(8, outputs_dir, 'figure.pdf')

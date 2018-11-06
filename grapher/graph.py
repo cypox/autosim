@@ -1,49 +1,46 @@
 #!/usr/bin/python3
+import os
 import matplotlib.pyplot as plt
+from extract.parse import parse_report
 
-output_filename = 'figure.pdf'
 
-results = open('results', 'r')
+def plot_results(word_size = 8, outputs_folder = '/home/cy/dac-2019/autosim/outputs/', output_filename = 'figure.pdf')
+  weights = []
+  luts = []
+  logics = []
+  signals = []
+  resources = []
+  energy = []
 
-weights = []
-luts = []
-logics = []
-signals = []
-resources = []
-energy = []
+  for i in range(0, 2**word_size):
+    output_path = '{}/project'.format(format(i, '#0{}b'.format(word_size+2)))
+    project_path = os.path.join(outputs_folder, output_path)
+    (u, p) = parse_report(project_path)
 
-for line in results:
-  if line == '\n':
-    continue
+    lut = u['| Slice                    |']
+    logic = p['| Slice Logic    |']
+    signal = p['| Signals        |']
 
-  weight = int(line.split(':')[0])
-  res = line.split(':')[1]
-  lut = float(res.split(',')[0])
-  logic = float(res.split(',')[1])
-  signal = float(res.split(',')[2])
+    weights.append(i)
+    luts.append(lut)
+    logics.append(logic)
+    signals.append(signal)
 
-  weights.append(weight)
-  luts.append(lut)
-  logics.append(logic)
-  signals.append(signal)
+    resources.append(lut)
+    energy.append(signal + logic)
+    
+  fig, ax1 = plt.subplots()
+  ax1.bar(weights, resources)
+  ax1.set_xlabel('Weights')
+  # Make the y-axis label, ticks and tick labels match the line color.
+  ax1.set_ylabel('Resources', color='b')
+  ax1.tick_params('y', colors='b')
 
-  resources.append(lut)
-  energy.append(signal + logic)
+  ax2 = ax1.twinx()
+  ax2.plot(weights, energy, 'r-')
+  ax2.set_ylabel('Energy', color='r')
+  ax2.tick_params('y', colors='r')
 
-results.close()
-
-fig, ax1 = plt.subplots()
-ax1.bar(weights, resources)
-ax1.set_xlabel('Weights')
-# Make the y-axis label, ticks and tick labels match the line color.
-ax1.set_ylabel('Resources', color='b')
-ax1.tick_params('y', colors='b')
-
-ax2 = ax1.twinx()
-ax2.plot(weights, energy, 'r-')
-ax2.set_ylabel('Energy', color='r')
-ax2.tick_params('y', colors='r')
-
-fig.tight_layout()
-plt.savefig(output_filename)
-plt.show()
+  fig.tight_layout()
+  plt.savefig(output_filename)
+  plt.show()
