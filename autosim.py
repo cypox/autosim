@@ -23,7 +23,8 @@ if __name__ == "__main__":
     os.makedirs(outputs_dir)
 
   #for i in range(13, 14): # for debug only
-  for i in range(0, 2**word_size):
+  for i in range(202, 2**word_size):
+  #for i in range(0, 2**word_size):
     output_path = '{}'.format(format(i, '#0{}b'.format(word_size+2)))
 
     source_path = os.path.join(outputs_dir, output_path)
