@@ -11,7 +11,7 @@ def parse_report(path = '.'):
 
   u_keywords_map = {
     #utilization report keys
-    '| Slice LUTs*             |'    : 0,
+    '| Slice LUTs              |'    : 0,
     '| Slice Registers         |'    : 0,
     '| F7 Muxes                |'    : 0,
     '| F8 Muxes                |'    : 0,
