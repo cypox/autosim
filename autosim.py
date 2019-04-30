@@ -10,6 +10,7 @@ from extract.parse import parse_report
 #from grapher.graph import plot_results
 
 if __name__ == "__main__":
+  generate_only = True
   if len(sys.argv) == 2:
     word_size = int(sys.argv[1])
   else:
@@ -36,22 +37,24 @@ if __name__ == "__main__":
     #print('generating source file {} for input {}'.format(source_file, format(i, '#0{}b'.format(word_size+2))))
     
     generate_multiplier(a_len = word_size, b_len = word_size, w = i, filename = source_file, top = top)
-    shutil.copy2(fa_source_vhdl, source_path)
+    if not generate_only:
+        shutil.copy2(fa_source_vhdl, source_path)
 
-    script_path = source_path
-    script_name = 'script.tcl'
-    script_file = os.path.join(script_path, script_name)
-    generate_tcl_script(path=script_path, filename = script_name, top = top)
-    #print('generating tcl script in {}'.format(script_path))
+        script_path = source_path
+        script_name = 'script.tcl'
+        script_file = os.path.join(script_path, script_name)
+        generate_tcl_script(path=script_path, filename = script_name, top = top)
+        #print('generating tcl script in {}'.format(script_path))
 
-    # vivado -mode batch -source script.tcl
-    vivado_args = ['-nolog', '-nojournal', '-notrace', '-mode', 'batch', '-source', script_file]
-    command = vivado_cmd + vivado_args
-    #print('executing: \'{}\''.format(command))
-    check_call(command, stdout=DEVNULL, stderr=STDOUT)
+        # vivado -mode batch -source script.tcl
+        vivado_args = ['-nolog', '-nojournal', '-notrace', '-mode', 'batch', '-source', script_file]
+        command = vivado_cmd + vivado_args
+        #print('executing: \'{}\''.format(command))
+        check_call(command, stdout=DEVNULL, stderr=STDOUT)
 
-    reports_dir = os.path.join(script_path, 'project')
-    (u, p) = parse_report(reports_dir)
-    #print('{}:{},{},{}'.format(format(i, '#0{}'.format(3)), u['| Slice                    |'], p['| Slice Logic    |'], p['| Signals        |']))
+        reports_dir = os.path.join(script_path, 'project')
+        (u, p) = parse_report(reports_dir)
+        #print('{}:{},{},{}'.format(format(i, '#0{}'.format(3)), u['| Slice                    |'], p['| Slice Logic    |'], p['| Signals        |']))
 
-    #plot_results(8, outputs_dir, 'figure.pdf')
+        #plot_results(8, outputs_dir, 'figure.pdf')
+
